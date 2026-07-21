@@ -13,18 +13,21 @@ venv/
 .pytest_cache/
 
 # --- Test / AI artifacts (can be large and are always regenerable) --------
-# Anchored to the repo root (leading slash) — unanchored `reports/` also
-# matched app/reports/, silently excluding that source package from git.
+# All anchored to the repo root (leading slash). An earlier unanchored
+# `reports/` here also matched app/reports/, and unanchored `screenshots/`
+# would equally have matched assets/screenshots/ — both would silently
+# exclude real source/asset files from git. Anchoring avoids that class of
+# bug for every rule below, not just the one that already bit us.
 /reports/
 logs/*
 !logs/.gitkeep
-allure-results/
-allure-report/
-playwright-report/
-test-results/
-trace/
-videos/
-screenshots/
+/allure-results/
+/allure-report/
+/playwright-report/
+/test-results/
+/trace/
+/videos/
+/screenshots/
 data/artifacts/*
 !data/artifacts/.gitkeep
 data/*.db

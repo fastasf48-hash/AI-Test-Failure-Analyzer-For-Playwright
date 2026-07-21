@@ -31,7 +31,14 @@ with get_repository() as repo:
 st.subheader("Failure frequency (last 30 days)")
 if failure_trend:
     df = pd.DataFrame(failure_trend, columns=["day", "failures"])
-    st.plotly_chart(px.bar(df, x="day", y="failures"), width="stretch")
+    df["day"] = df["day"].astype(str)
+    fig = px.bar(df, x="day", y="failures")
+    # Without this, Plotly infers a continuous datetime axis for the "day"
+    # column — harmless with weeks of data, but with only one or two days
+    # recorded so far it auto-zooms to a sub-second tick range and the axis
+    # labels become unreadable. Treating "day" as categorical fixes both cases.
+    fig.update_xaxes(type="category")
+    st.plotly_chart(fig, width="stretch")
 else:
     st.info("Not enough data yet — run your Playwright suite a few times to see trends.")
 

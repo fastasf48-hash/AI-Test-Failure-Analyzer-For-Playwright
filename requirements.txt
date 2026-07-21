@@ -1,0 +1,26 @@
+# --- Test automation ---------------------------------------------------------
+playwright==1.47.0
+pytest==8.3.3
+pytest-playwright==0.5.2
+pytest-html==4.1.1
+allure-pytest==2.13.5
+
+# --- Dashboard & data -----------------------------------------------------------
+streamlit==1.38.0
+pandas==2.2.2
+plotly==5.24.0
+
+# --- Persistence ----------------------------------------------------------------
+SQLAlchemy==2.0.35
+
+# --- LLM providers (pluggable; both installed, only the configured one is used) --
+openai==1.51.0
+anthropic==0.36.0
+
+# --- Config & env -----------------------------------------------------------------
+python-dotenv==1.0.1
+
+# --- Lint / format (dev only) ------------------------------------------------------
+ruff==0.6.9
+black==24.8.0
+pytest-mock==3.14.0

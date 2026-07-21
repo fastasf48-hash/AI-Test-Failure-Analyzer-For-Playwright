@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Test Failure Analyzer - Demo App</title>
+</head>
+<body>
+  <h1>Demo Login</h1>
+  <form id="login-form">
+    <input id="username" type="text" placeholder="Username" />
+    <input id="password" type="password" placeholder="Password" />
+    <button id="login-btn" type="button">Login</button>
+  </form>
+  <div id="welcome" style="display:none;">Welcome!</div>
+  <div id="error" style="display:none;">Invalid credentials</div>
+
+  <button id="hidden-btn" style="display:none;">Hidden Action</button>
+
+  <button id="load-data-btn" type="button">Load Data</button>
+  <div id="data-status"></div>
+
+  <script>
+    document.getElementById('login-btn').addEventListener('click', () => {
+      const user = document.getElementById('username').value;
+      const pass = document.getElementById('password').value;
+      const welcome = document.getElementById('welcome');
+      const error = document.getElementById('error');
+      if (user === 'admin' && pass === 'secret') {
+        welcome.style.display = 'block';
+        error.style.display = 'none';
+      } else {
+        error.style.display = 'block';
+        welcome.style.display = 'none';
+        console.error('Login failed for user: ' + user);
+      }
+    });
+
+    document.getElementById('load-data-btn').addEventListener('click', () => {
+      fetch('missing-data.json')
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error('HTTP ' + res.status);
+          }
+          document.getElementById('data-status').textContent = 'loaded';
+        })
+        .catch(() => {
+          document.getElementById('data-status').textContent = 'failed';
+          console.error('Failed to load data');
+        });
+    });
+  </script>
+</body>
+</html>

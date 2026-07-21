@@ -4,14 +4,15 @@ Every other module reads configuration through `get_settings()` instead of
 calling `os.getenv` directly. This gives us one place to change defaults,
 one place to validate, and one place to mock in tests.
 """
+
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass, field
 from functools import lru_cache
 from pathlib import Path
 
 from dotenv import load_dotenv
-import os
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 

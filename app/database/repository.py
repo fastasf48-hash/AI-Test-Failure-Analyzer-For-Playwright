@@ -7,6 +7,7 @@ instead of importing a global engine — that's what lets the unit tests in
 `tests/test_database.py` point it at an in-memory SQLite engine with zero
 mocking.
 """
+
 from __future__ import annotations
 
 from collections.abc import Iterator, Sequence
@@ -130,7 +131,7 @@ class Repository:
         avg_duration_seconds: float
         latest_run: TestRun | None
 
-    def get_summary_stats(self) -> "Repository.SummaryStats":
+    def get_summary_stats(self) -> Repository.SummaryStats:
         total = self._session.scalar(select(func.count(TestResult.id))) or 0
         passed = (
             self._session.scalar(
@@ -201,8 +202,8 @@ class Repository:
 def get_repository() -> Iterator[Repository]:
     """Convenience for callers that just want one unit of work:
 
-        with get_repository() as repo:
-            repo.create_test_run(...)
+    with get_repository() as repo:
+        repo.create_test_run(...)
     """
     with session_scope() as session:
         yield Repository(session)

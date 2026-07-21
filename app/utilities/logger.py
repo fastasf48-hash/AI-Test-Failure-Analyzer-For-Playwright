@@ -5,11 +5,11 @@ library caches loggers by name, so repeated calls are cheap) rather than
 reaching for `print`. Rotating file handlers keep `logs/app.log` bounded so a
 long-lived dashboard process never grows an unbounded log file.
 """
+
 from __future__ import annotations
 
 import logging
 from logging.handlers import RotatingFileHandler
-from pathlib import Path
 
 from app.config.settings import get_settings
 

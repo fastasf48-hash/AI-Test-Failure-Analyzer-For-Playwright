@@ -12,13 +12,14 @@ re-running "Analyze Failure" for a second opinion should keep history instead
 of overwriting it. `TestResult.latest_ai_analysis` gives callers the common
 case without them needing to know about the history.
 """
+
 from __future__ import annotations
 
 import enum
 from datetime import UTC, datetime
 
-from sqlalchemy import Enum as SAEnum
 from sqlalchemy import JSON, Float, ForeignKey, String, Text
+from sqlalchemy import Enum as SAEnum
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
@@ -31,14 +32,14 @@ class Base(DeclarativeBase):
     pass
 
 
-class ResultStatus(str, enum.Enum):
+class ResultStatus(enum.StrEnum):
     PASSED = "passed"
     FAILED = "failed"
     SKIPPED = "skipped"
     BROKEN = "broken"
 
 
-class FailureCategory(str, enum.Enum):
+class FailureCategory(enum.StrEnum):
     """Mirrors the categories called out in the project spec. `UNKNOWN` is the
     safe fallback both the rule-based classifier and the LLM prompt can use
     instead of forcing a guess.
@@ -62,7 +63,7 @@ class FailureCategory(str, enum.Enum):
     UNKNOWN = "Unknown"
 
 
-class Severity(str, enum.Enum):
+class Severity(enum.StrEnum):
     LOW = "Low"
     MEDIUM = "Medium"
     HIGH = "High"
@@ -88,9 +89,7 @@ class TestRun(Base):
     git_branch: Mapped[str | None] = mapped_column(String(128), default=None)
     git_commit: Mapped[str | None] = mapped_column(String(64), default=None)
 
-    results: Mapped[list["TestResult"]] = relationship(
-        back_populates="run", cascade="all, delete-orphan"
-    )
+    results: Mapped[list[TestResult]] = relationship(back_populates="run", cascade="all, delete-orphan")
 
     @property
     def failure_rate(self) -> float:
@@ -123,15 +122,15 @@ class TestResult(Base):
     # Lets the dashboard show *something* useful for every failure with zero API cost.
     rule_based_category: Mapped[FailureCategory | None] = mapped_column(SAEnum(FailureCategory), default=None)
 
-    run: Mapped["TestRun"] = relationship(back_populates="results")
-    ai_analyses: Mapped[list["AIAnalysis"]] = relationship(
+    run: Mapped[TestRun] = relationship(back_populates="results")
+    ai_analyses: Mapped[list[AIAnalysis]] = relationship(
         back_populates="test_result",
         cascade="all, delete-orphan",
         order_by="AIAnalysis.created_at.desc()",
     )
 
     @property
-    def latest_ai_analysis(self) -> "AIAnalysis | None":
+    def latest_ai_analysis(self) -> AIAnalysis | None:
         return self.ai_analyses[0] if self.ai_analyses else None
 
 
@@ -162,4 +161,4 @@ class AIAnalysis(Base):
     # field above is already extracted — cheap insurance if the schema evolves.
     raw_response: Mapped[dict | None] = mapped_column(JSON, default=None)
 
-    test_result: Mapped["TestResult"] = relationship(back_populates="ai_analyses")
+    test_result: Mapped[TestResult] = relationship(back_populates="ai_analyses")

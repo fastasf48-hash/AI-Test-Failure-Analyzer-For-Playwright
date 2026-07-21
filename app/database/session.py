@@ -3,6 +3,7 @@ SQLAlchemy engine — everything else gets a `Session` handed to it (see
 `session_scope` / `app.database.repository.get_repository`), which is what
 keeps the repository layer unit-testable against an in-memory SQLite engine.
 """
+
 from __future__ import annotations
 
 from collections.abc import Iterator

@@ -2,6 +2,7 @@
 (not a mock) — `Repository` takes a `Session` directly, so no monkeypatching
 of the app's global engine is needed to isolate these from `data/analyzer.db`.
 """
+
 from __future__ import annotations
 
 import pytest
@@ -32,7 +33,9 @@ def test_create_run_and_result_tracks_counts(repo):
         duration_seconds=1.2,
         rule_based_category=FailureCategory.TIMEOUT,
     )
-    repo.add_test_result(run_id=run.id, test_name="test_logout", status=ResultStatus.PASSED, duration_seconds=0.5)
+    repo.add_test_result(
+        run_id=run.id, test_name="test_logout", status=ResultStatus.PASSED, duration_seconds=0.5
+    )
     repo.finish_test_run(run)
 
     assert run.total_tests == 2

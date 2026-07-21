@@ -37,7 +37,18 @@ jobs:
       - name: Format check (black)
         run: black --check app tests analyze_failure.py
 
-      - name: Run tests
+      # Real regression gate: these must pass for the build to succeed.
+      - name: Run unit tests
+        run: pytest tests/ --ignore=tests/ui -q
+
+      # tests/ui/ contains a handful of Playwright tests that fail on
+      # purpose (a wrong locator, a wrong assertion, ...) — their job is to
+      # exercise the failure-collection pipeline and produce real demo
+      # artifacts for the dashboard, not to gate this build. continue-on-error
+      # keeps that expected redness from failing the job while still
+      # generating the pytest-html/Allure reports and artifacts below.
+      - name: Run full suite (includes demo UI tests — some fail on purpose)
+        continue-on-error: true
         run: >
           pytest tests/ --browser chromium
           --html=reports/pytest-report.html --self-contained-html

@@ -1,0 +1,47 @@
+name: AI Analysis (manual)
+
+# workflow_dispatch is the ONLY trigger — GitHub never fires this on push or
+# pull_request. It only runs when someone with write access explicitly clicks
+# "Run workflow" in the Actions tab. See docs/enabling_ai_in_ci.md.
+on:
+  workflow_dispatch:
+    inputs:
+      failure_id:
+        description: "TestResult id to analyze (leave blank for the most recent failure)"
+        required: false
+        type: string
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Install Playwright browsers
+        run: playwright install --with-deps chromium
+
+      - name: Run the Playwright suite to populate failures
+        run: pytest tests/ --browser chromium || true
+
+      - name: Run AI analysis
+        env:
+          LLM_PROVIDER: ${{ vars.LLM_PROVIDER || 'openai' }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          CLAUDE_API_KEY: ${{ secrets.CLAUDE_API_KEY }}
+        run: |
+          if [ -n "${{ inputs.failure_id }}" ]; then
+            python analyze_failure.py --id "${{ inputs.failure_id }}"
+          else
+            python analyze_failure.py --latest
+          fi

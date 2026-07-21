@@ -2,8 +2,8 @@
 playwright==1.61.0
 pytest==9.1.1
 pytest-playwright==0.8.0
-pytest-html==4.1.1
-allure-pytest==2.13.5
+pytest-html==4.2.0
+allure-pytest==2.16.0
 
 # --- Dashboard & data -----------------------------------------------------------
 streamlit==1.59.2
@@ -24,4 +24,3 @@ python-dotenv==1.2.2
 # --- Lint / format (dev only) ------------------------------------------------------
 ruff==0.15.22
 black==26.5.1
-pytest-mock==3.14.0

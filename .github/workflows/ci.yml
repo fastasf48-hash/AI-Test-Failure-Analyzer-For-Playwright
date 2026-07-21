@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# AI analysis is NEVER run here. No OPENAI_API_KEY / CLAUDE_API_KEY secret is
+# referenced anywhere in this workflow, so even if a step tried to invoke
+# analyze_failure.py, there would be no key for it to authenticate with.
+# See README.md "Enabling AI analysis in CI (optional)" for how to opt in.
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Install Playwright browsers
+        run: playwright install --with-deps chromium
+
+      - name: Lint (ruff)
+        run: ruff check app tests analyze_failure.py
+
+      - name: Format check (black)
+        run: black --check app tests analyze_failure.py
+
+      - name: Run tests
+        run: >
+          pytest tests/ --browser chromium
+          --html=reports/pytest-report.html --self-contained-html
+          --alluredir=allure-results
+
+      - name: Install Allure commandline
+        if: always()
+        run: npm install -g allure-commandline
+
+      - name: Generate Allure HTML report
+        if: always()
+        run: |
+          python -c "
+          from pathlib import Path
+          from app.reports.allure_linker import generate_allure_report
+          generate_allure_report(Path('allure-results'), Path('allure-report'))
+          "
+
+      - name: Upload pytest-html report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-html-report
+          path: reports/
+          if-no-files-found: ignore
+
+      - name: Upload Allure report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: allure-report/
+          if-no-files-found: ignore
+
+      - name: Upload failure artifacts (screenshots, videos, traces, logs)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: failure-artifacts
+          path: data/artifacts/
+          if-no-files-found: ignore

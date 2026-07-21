@@ -72,6 +72,9 @@ def render_failure_artifacts(failure: TestResult) -> None:
     with st.expander("Full stack trace"):
         st.code(failure.stack_trace or "(none captured)", language="text")
 
+    if failure.html_report_path:
+        st.caption(f"📄 Also in the pytest-html report: `{failure.html_report_path}`")
+
 
 def render_ai_analysis_card(analysis: AIAnalysis) -> None:
     st.markdown("#### 🤖 AI Analysis")

@@ -22,6 +22,7 @@ import pytest
 
 from app.database.repository import get_repository
 from app.database.session import init_db
+from app.reports.html_report_linker import link_html_report
 from app.utilities.git_info import get_git_branch, get_git_commit
 from app.utilities.logger import get_logger
 
@@ -64,6 +65,16 @@ def pytest_sessionstart(session: pytest.Session) -> None:
     logger.info("Test session %s started (run id=%s)", execution_id, run.id)
 
 
+def _get_html_report_option(config: pytest.Config) -> str | None:
+    """`--html` is registered by the pytest-html plugin (a project dependency,
+    always active) — this only guards against it somehow being unavailable.
+    """
+    try:
+        return config.getoption("--html", default=None)
+    except (ValueError, AttributeError):
+        return None
+
+
 def pytest_sessionfinish(session: pytest.Session, exitstatus: int) -> None:
     run_id = getattr(session.config, "_att_run_id", None)
     if run_id is None:
@@ -80,3 +91,7 @@ def pytest_sessionfinish(session: pytest.Session, exitstatus: int) -> None:
                 run.failed_count,
                 run.skipped_count,
             )
+
+            html_report = _get_html_report_option(session.config)
+            if html_report:
+                link_html_report(repo, run_id, html_report)

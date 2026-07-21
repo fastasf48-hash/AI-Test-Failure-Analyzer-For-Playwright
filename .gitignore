@@ -10,9 +10,12 @@ venv/
 *.egg-info/
 .mypy_cache/
 .ruff_cache/
+.pytest_cache/
 
 # --- Test / AI artifacts (can be large and are always regenerable) --------
-reports/
+# Anchored to the repo root (leading slash) — unanchored `reports/` also
+# matched app/reports/, silently excluding that source package from git.
+/reports/
 logs/*
 !logs/.gitkeep
 allure-results/

@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/fastasf48-hash/AI-Test-Failure-Analyzer-For-Playwright/actions/workflows/ci.yml/badge.svg)](https://github.com/fastasf48-hash/AI-Test-Failure-Analyzer-For-Playwright/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/python-3.11%2B-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
+![License](https://img.shields.io/badge/license-All%20Rights%20Reserved-lightgrey)
 
 Every automated test failure comes with a pile of evidence — a screenshot, a
 video, a trace, console logs, network logs, a stack trace — that a QA
@@ -290,11 +290,13 @@ black --check app tests analyze_failure.py
 
 ## Contributing
 
-1. Fork and create a feature branch.
-2. Make your change; add or update tests.
-3. Before opening a PR: `ruff check app tests analyze_failure.py`, `black --check app tests analyze_failure.py`, `pytest tests/ --ignore=tests/ui`.
-4. Open a PR describing what changed and why.
+This is a personal portfolio project and isn't currently open to outside
+contributions (see [License](#license)). If you notice a bug or have
+feedback, feel free to open an issue — that's welcome and appreciated.
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+All Rights Reserved — see [LICENSE](LICENSE). This repository is public for
+portfolio and recruitment review only; no permission is granted to copy,
+modify, or reuse this code. If you'd like to use any part of it, please
+reach out to the author first.

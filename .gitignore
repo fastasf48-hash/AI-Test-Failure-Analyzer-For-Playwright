@@ -32,6 +32,7 @@ data/*.sqlite
 # --- IDE ----------------------------------------------------------------------
 .idea/
 .vscode/
+.claude/
 
 # --- Personal interview prep (never published) ------------------------------
 INTERVIEW_PREP_GUIDE.md

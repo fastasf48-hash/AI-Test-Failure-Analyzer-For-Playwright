@@ -14,6 +14,12 @@ ignore = ["E501"]
 [tool.ruff.lint.isort]
 known-first-party = ["app"]
 
+[tool.ruff.lint.per-file-ignores]
+# Streamlit only puts a launched script's own directory on sys.path, not the
+# project root — these entry points must fix sys.path before importing `app.*`.
+"app/dashboard/Home.py" = ["E402"]
+"app/dashboard/pages/*.py" = ["E402"]
+
 [tool.pytest.ini_options]
 markers = [
     "ui: browser-driven Playwright tests",

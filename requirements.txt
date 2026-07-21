@@ -6,9 +6,9 @@ pytest-html==4.1.1
 allure-pytest==2.13.5
 
 # --- Dashboard & data -----------------------------------------------------------
-streamlit==1.38.0
-pandas==2.2.2
-plotly==5.24.0
+streamlit==1.59.2
+pandas==3.0.3
+plotly==6.9.0
 
 # --- Persistence ----------------------------------------------------------------
 SQLAlchemy==2.0.51

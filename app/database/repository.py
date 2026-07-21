@@ -197,6 +197,20 @@ class Repository:
         rows = self._session.execute(stmt).all()
         return [(name, passes, failures) for name, passes, failures in rows if passes > 0 and failures > 0]
 
+    def get_average_duration_per_run(self, limit: int = 30) -> Sequence[tuple[str, float]]:
+        """Average test duration per run, most recent `limit` runs, returned in
+        chronological order (oldest first) so it plots as a left-to-right trend.
+        """
+        stmt = (
+            select(TestRun.execution_id, func.avg(TestResult.duration_seconds))
+            .join(TestResult, TestResult.run_id == TestRun.id)
+            .group_by(TestRun.id)
+            .order_by(TestRun.started_at.desc())
+            .limit(limit)
+        )
+        rows = self._session.execute(stmt).all()
+        return list(reversed(rows))
+
 
 @contextmanager
 def get_repository() -> Iterator[Repository]:

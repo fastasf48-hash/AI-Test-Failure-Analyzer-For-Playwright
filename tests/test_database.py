@@ -136,3 +136,16 @@ def test_trends_and_top_failing_tests_use_tz_aware_comparison(repo):
 
     top = repo.get_top_failing_tests(limit=1)
     assert top[0] == ("test_a", 2)
+
+
+def test_average_duration_per_run_is_chronological(repo):
+    run1 = repo.create_test_run(execution_id="run-a")
+    repo.add_test_result(run_id=run1.id, test_name="t", status=ResultStatus.PASSED, duration_seconds=1.0)
+    repo.add_test_result(run_id=run1.id, test_name="t2", status=ResultStatus.PASSED, duration_seconds=3.0)
+
+    run2 = repo.create_test_run(execution_id="run-b")
+    repo.add_test_result(run_id=run2.id, test_name="t", status=ResultStatus.PASSED, duration_seconds=5.0)
+
+    trend = repo.get_average_duration_per_run()
+
+    assert trend == [("run-a", 2.0), ("run-b", 5.0)]
